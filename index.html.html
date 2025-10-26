@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bacolod Reimagined • Urban Redevelopment Showcase</title>
+  <meta name="description" content="An animated mini‑website highlighting future‑facing redevelopment concepts for Bacolod City: green spaces, smart transport, resilient housing, and creative districts." />
+  <style>
+    :root{
+      --bg:#0b1020;          /* Deep midnight */
+      --bg-2:#0f1530;        /* Card background */
+      --fg:#EAF0FF;          /* Text */
+      --muted:#9FB0D9;       /* Muted text */
+      --accent:#6EE7B7;      /* Mint */
+      --accent-2:#60A5FA;    /* Sky */
+      --accent-3:#F59E0B;    /* Amber */
+      --danger:#EF4444;      /* Red */
+      --ok:#10B981;          /* Green */
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 18px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      padding-top: 70px;
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;
+      color:var(--fg); background: radial-gradient(1200px 700px at 70% -10%, #1b2450 0%, var(--bg) 50%);
+      background-attachment: fixed; overflow-x:hidden;
+    }
+    a{color:var(--accent-2); text-decoration:none}
+    img{max-width:100%; display:block}
+
+    /* Layout */
+    .container{max-width:1200px; margin-inline:auto; padding: clamp(16px, 3vw, 28px)}
+    header{
+      position:fixed; top:0;left: 0; right: 0; z-index:50; backdrop-filter:saturate(140%) blur(8px);
+      background: linear-gradient(180deg, rgba(12,18,38,.9), rgba(12,18,38,.55));
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    nav{display:flex; align-items:center; gap:16px; justify-content:space-between}
+    .brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.5px}
+    .brand svg{width:28px; height:28px}
+    .nav-links{display:flex; gap:10px; flex-wrap:wrap}
+    .nav-links a{
+      padding:10px 14px; border-radius:999px; border:1px solid rgba(255,255,255,.12);
+      color:var(--fg); opacity:.9
+    }
+    .nav-links a:hover{background:rgba(255,255,255,.06)}
+
+    /* Hero */
+    .hero{position:relative; min-height:82vh; display:grid; place-items:center; overflow:hidden}
+    .hero .content{max-width:900px; text-align:center}
+    .eyebrow{font-weight:700; letter-spacing:.12em; color:var(--accent); text-transform:uppercase; font-size:12px}
+    h1{font-size: clamp(32px, 5vw, 64px); line-height:1.08; margin:10px 0 14px}
+    .lead{color:var(--muted); font-size: clamp(16px, 2.2vw, 20px)}
+    .cta-row{display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:22px}
+    .btn{padding:12px 18px; border-radius:999px; border:1px solid rgba(255,255,255,.12); cursor:pointer}
+    .btn.primary{background:linear-gradient(135deg, var(--accent-2), #34D399)}
+    .btn.primary span{color:#08111f; font-weight:700}
+
+    /* Floating skyline and parallax */
+    .skyline{position:absolute; inset:0; pointer-events:none}
+    .parallax{position:absolute; inset:0;}
+    .stars{position:absolute; inset:0; background:radial-gradient(1px 1px at 10% 20%,#fff 98%,transparent),
+            radial-gradient(1px 1px at 80% 30%,#ffffff 98%,transparent),
+            radial-gradient(1px 1px at 30% 80%,#fff 98%,transparent),
+            radial-gradient(1px 1px at 60% 60%,#fff 98%,transparent); opacity:.25}
+    .drone{position:absolute; width:60px; animation: hover 4s ease-in-out infinite; opacity:50%}
+    .drone:nth-child(1){left:12%; top:28%}
+    .drone:nth-child(2){right:14%; top:38%; animation-delay:.6s}
+    .drone:nth-child(3){left:35%; top:16%; animation-delay:1.2s}
+    @keyframes hover{0%,100%{transform:translateY(-6px)}50%{transform:translateY(6px)}}
+
+    /* Sections */
+    section{scroll-margin-top:84px}
+    .section{
+      margin-block: clamp(32px, 6vw, 80px);
+    }
+    .section .head{display:flex; align-items:flex-end; justify-content:space-between; gap:16px; margin-bottom:18px}
+    .section h2{font-size: clamp(24px, 3.2vw, 40px); margin:0}
+    .pill{font-size:12px; border:1px solid rgba(255,255,255,.12); padding:6px 10px; border-radius:999px; color:var(--muted)}
+
+    .grid{display:grid; gap:20px}
+    @media (min-width: 860px){ .grid.cols-3{grid-template-columns:repeat(3,1fr)} }
+    @media (min-width: 860px){ .grid.cols-2{grid-template-columns:repeat(2,1fr)} }
+
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden; position:relative
+    }
+    .card .body{padding:18px}
+    .card h3{margin:0 0 6px}
+    .meta{color:var(--muted); font-size:14px}
+
+    /* Animations on enter */
+    .reveal{opacity:0; transform: translateY(18px); transition: opacity .9s ease, transform .9s ease}
+    .reveal.in-view{opacity:1; transform:none}
+
+    /* Themed visuals */
+    .lagoon{
+      height:280px; background: linear-gradient(135deg, rgb(143 215 233 / 25%), rgb(12 29 24 / 35%));
+      position:relative; display:grid; place-items:end center
+    }
+    .water{position:absolute; left:0; right:0; bottom:0; height:120px; background: linear-gradient(180deg, rgba(96,165,250,.4), rgba(96,165,250,.08)); overflow:hidden}
+    .ripple{position:absolute; width:140%; height:60px; left:-20%; bottom:40px; background: radial-gradient(50% 60% at 50% 50%, rgba(255,255,255,.7) 0, rgba(255,255,255,0) 60%);
+      opacity:.16; animation: ripple 7s linear infinite}
+    .ripple:nth-child(2){animation-delay:2.1s}
+    .ripple:nth-child(3){animation-delay:4.2s}
+    @keyframes ripple{0%{transform:translateY(40px) scale(.8)}100%{transform:translateY(-40px) scale(1.2)}}
+
+    .bike-lane{height:220px; background: linear-gradient(180deg, rgba(16,185,129,.12), rgba(16,185,129,.04)); position:relative}
+
+    .road{position:absolute; left:4%; right:4%; top:50%; transform:translateY(-50%); height:135px; background:linear-gradient(360deg, rgba(255,255,255,.08) 50%, transparent 50%) 0 0/28px 100%, rgba(255,255,255,.08);
+      border-radius:14px; border:1px dashed rgba(255,255,255,.18)}
+
+    .bike{position:absolute; left:-120px; top:calc(50% - 5px); width:100px; animation: ride 8s linear infinite; animation-delay:7s}
+    @keyframes ride{0%{left:-120px}100%{left:calc(100% + 40px)}}
+
+    .walker{position:absolute; left:10px; top:calc(50% - -10px); width:100px; animation: walk 6s linear infinite;}
+    @keyframes walk{0%{left:10px; opacity:0;}10%{opacity:0.5;}40%{opacity:1;}70%{opacity:0.5;}100%{left:calc(100% + 20px); opacity: 0;}}
+
+    .ejeep{position:absolute; right:-140px; top:calc(50% - 66px); width:140px; animation: drive 10s linear infinite; animation-delay:5s}
+    @keyframes drive{0%{right:-140px}100%{right:calc(100% + 60px)}}
+
+    .government {position: absolute; top: 30px; height: 100px; width: 150px; opacity: 0.2;}
+
+    .seedling {position: absolute; animation: fade-seedling 6s infinite; opacity: 0;}
+
+    .seedling:nth-child(1) {left: 5%;  top:255px; animation-delay: 0.5s;}
+
+    .seedling:nth-child(2) {left: 20%; top:254px; animation-delay: 1.5s;}
+
+    .seedling:nth-child(3) {left: 35%; top:256px; animation-delay: 2.5s;}
+
+    .seedling:nth-child(4) {left: 50%; top:251px; animation-delay: 3.5s;}
+
+    .seedling:nth-child(5) {left: 67%; top:232px; animation-delay: 4.5s;}
+
+    .seedling:nth-child(6) {left: 85%; top:251px; animation-delay: 5.5s;}
+    @keyframes fade-seedling {0% { opacity: 0; } 65% { opacity: 1; }}
+
+    .leaves {position: absolute; inset: 0;overflow: hidden;pointer-events: none;}
+
+    .leaf-fall {position: absolute; top: -25px; width: 28px; opacity: 0.8; animation: fall 8s linear infinite, sway 3s ease-in-out infinite alternate;}
+
+    .leaf-fall:nth-child(1) {left: 10%; animation-duration: 9s, 3.5s; animation-delay: 0s, 0s;}
+
+    .leaf-fall:nth-child(2) {left: 25%;width: 25px; animation-duration: 11s, 4s; animation-delay: 2s, 1s;}
+
+    .leaf-fall:nth-child(3) {left: 45%;width: 20px;animation-duration: 8s, 2.5s;animation-delay: 4s, .5s;}
+
+    .leaf-fall:nth-child(4) {left: 65%;width: 25px;animation-duration: 12s, 4.5s;animation-delay: 6s, .7s;}
+
+    .leaf-fall:nth-child(5) {left: 85%;width: 20px;animation-duration: 7s, 2s;animation-delay: 7s, .8s;}
+
+    @keyframes fall {from {top: -25px;} 0% { transform: translateY(0) rotate(0deg); opacity: 0; }10% { opacity: 1; }50%{transform: translateY(500px) rotate(180deg); opacity: 1;}100% { transform: translateY(1000px) rotate(360deg); opacity: 0; }to {top: 200px;}}
+
+    @keyframes sway {0% { transform: translateX(-12px) rotate(-6deg); }100% { transform: translateX(12px) rotate(6deg); }}
+
+
+    /* KPI bars */
+    .kpi{display:flex; align-items:center; gap:10px; margin-top:10px}
+    .bar{flex:1; height:10px; background:rgba(255,255,255,.08); border-radius:999px; overflow:hidden}
+    .bar > i{display:block; height:100%; width:0; background:linear-gradient(90deg, var(--accent-2), var(--accent)); border-radius:999px}
+
+    /* Footer */
+    footer{padding:30px 0; color:var(--muted); border-top:1px solid rgba(255,255,255,.08)}
+
+    /* Utility */
+    .tag{display:inline-flex; gap:6px; align-items:center; padding:6px 10px; border-radius:999px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); font-size:12px}
+    .row{display:flex; gap:10px; flex-wrap:wrap}
+    .right{margin-left:auto}
+  </style>
+  
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <div class="brand">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M3 11l9-8 9 8v9a2 2 0 0 1-2 2h-3v-7H8v7H5a2 2 0 0 1-2-2z"/>
+          </svg>
+          <span>Bacolod Reimagined</span>
+        </div>
+        <div class="nav-links">
+          <a href="#parks">Green & Parks</a>
+          <a href="#transport">Smart Transport</a>
+          <a href="#heritage">Heritage</a>
+          <a href="#housing">Resilient Housing</a>
+          <a href="#creative">Creative Districts</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero container" id="top">
+      <div class="content reveal">
+        <div class="eyebrow">Concept Showcase • Fictional but plausible</div>
+        <h1>Greener streets, smarter mobility, and vibrant public life for Bacolod City</h1>
+        <p class="lead">An animated glimpse into a future where parks are cooler, transport is cleaner, heritage is cherished, and neighborhoods are safer and more resilient.</p>
+        <div class="cta-row">
+          <a class="btn primary" href="#parks"><span>Explore the Vision</span></a>
+          
+        </div>
+      </div>
+      
+      <!-- Parallax skyline & drones -->
+      <div class="skyline">
+        <div class="parallax">
+          <div class="stars"></div>
+          <svg class="drone" viewBox="0 0 64 64" aria-hidden="true">
+            <circle cx="32" cy="32" r="10" fill="currentColor"/>
+            <g fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="10" cy="10" r="8"/>
+              <circle cx="54" cy="10" r="8"/>
+              <circle cx="10" cy="54" r="8"/>
+              <circle cx="54" cy="54" r="8"/>
+            </g>
+          </svg>
+          <svg class="drone" viewBox="0 0 64 64" aria-hidden="true">
+            <rect x="24" y="24" width="16" height="16" rx="8" fill="currentColor"/>
+            <g fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="10" cy="10" r="8"/>
+              <circle cx="54" cy="10" r="8"/>
+              <circle cx="10" cy="54" r="8"/>
+              <circle cx="54" cy="54" r="8"/>
+            </g>
+          </svg>
+          <svg class="drone" viewBox="0 0 64 64" aria-hidden="true">
+            <polygon points="32,18 46,46 18,46" fill="currentColor"/>
+            <g fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="10" cy="10" r="8"/>
+              <circle cx="54" cy="10" r="8"/>
+              <circle cx="10" cy="54" r="8"/>
+              <circle cx="54" cy="54" r="8"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- GREEN & PARKS -->
+    <section class="section container" id="parks">
+      <div class="head">
+        <h2>Reimagined Parks & Green Corridors</h2>
+        <span class="pill">Capitol Lagoon • Urban Farming • Cooling Shade</span>
+      </div>
+      <div class="grid cols-2">
+        <article class="card reveal">
+          <div class="lagoon">
+          <div class="government">
+            <!-- Remove local SVG reference that causes errors -->
+          </div>
+          <div class="leaves">
+              <img src="data:image/svg+xml;utf8,
+              <svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'>
+                <path fill='%236EE7B7' d='M52 12C28 9 14 21 8 40c8-8 17-10 26-8-8 4-14 9-18 17 16-6 26-16 36-37z'/>
+              </svg>" alt="leaves" class="leaf-fall"/>
+              <img src="data:image/svg+xml;utf8,
+              <svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'>
+                <path fill='%236EE7B7' d='M52 12C28 9 14 21 8 40c8-8 17-10 26-8-8 4-14 9-18 17 16-6 26-16 36-37z'/>
+              </svg>" alt="leaves" class="leaf-fall"/>
+              <img src="data:image/svg+xml;utf8,
+              <svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'>
+                <path fill='%236EE7B7' d='M52 12C28 9 14 21 8 40c8-8 17-10 26-8-8 4-14 9-18 17 16-6 26-16 36-37z'/>
+              </svg>" alt="leaves" class="leaf-fall"/>
+              <img src="data:image/svg+xml;utf8,
+              <svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'>
+                <path fill='%236EE7B7' d='M52 12C28 9 14 21 8 40c8-8 17-10 26-8-8 4-14 9-18 17 16-6 26-16 36-37z'/>
+              </svg>" alt="leaves" class="leaf-fall"/>
+              <img src="data:image/svg+xml;utf8,
+              <svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'>
+                <path fill='%236EE7B7' d='M52 12C28 9 14 21 8 40c8-8 17-10 26-8-8 4-14 9-18 17 16-6 26-16 36-37z'/>
+              </svg>" alt="leaves" class="leaf-fall"/>
+          </div>
+
+            <!--img class="leaf" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'><path fill='%236EE7B7' d='M52 12C28 9 14 21 8 40c8-8 17-10 26-8-8 4-14 9-18 17 16-6 26-16 36-37z'/></svg>" alt=""-->
+
+          <div class="water">
+              <div class="ripple"></div>
+              <div class="ripple"></div>
+              <div class="ripple"></div>
+            </div>
+          </div>
+          <div class="body">
+            <h3>Cool microclimate around the lagoon</h3>
+            <p class="meta">Native trees, misting arches, and permeable paths reduce heat and flooding while keeping spaces walkable and family‑friendly.</p>
+            <div class="kpi" aria-label="Projected shade coverage">
+              <span class="tag">Shade coverage</span>
+              <div class="bar" data-progress="82"><i></i></div><span>82%</span>
+            </div>
+            <div class="kpi" aria-label="Permeable surfaces">
+              <span class="tag">Permeable paths</span>
+              <div class="bar" data-progress="65"><i></i></div><span>65%</span>
+            </div>
+          </div>
+        </article>
+        <article class="card reveal">
+          <div class="body">
+            <h3>Green belts + pocket farms</h3>
+            <p class="meta">Linear parks connect barangays with edible landscapes—community planters, vertical gardens, and compost hubs along shaded walkways.</p>
+            <div class="row">
+              <span class="tag">Urban farming</span>
+              <span class="tag">Rain gardens</span>
+              <span class="tag">Solar benches</span>
+            </div>
+              <div class="gardens">
+                <div class="seedling">
+                  <!-- Remove local SVG references that cause errors -->
+                </div>
+                <div class="seedling">
+                  <!-- Remove local SVG references that cause errors -->
+                </div>
+                <div class="seedling">
+                  <!-- Remove local SVG references that cause errors -->
+                </div>
+                <div class="seedling">
+                  <!-- Remove local SVG references that cause errors -->
+                </div>
+                <div class="seedling">
+                  <!-- Remove local SVG references that cause errors -->
+                </div>
+                <div class="seedling">
+                  <!-- Remove local SVG references that cause errors -->
+                </div>
+                <svg viewBox="0 0 600 200" style="margin-top: 35px; width:100%" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0" stop-color="#60A5FA"/>
+                      <stop offset="1" stop-color="#6EE7B7"/>
+                    </linearGradient>
+                  </defs>
+                  <path id="wavePath" d="M0 140 C 100 120, 240 160, 360 120 S 520 160, 600 120" fill="none" stroke="url(#g1)" stroke-width="4"/>
+                  <g>
+                    <polygon points="10,0 30,0 20,20 40,20 10,60 20,30 0,30" fill="#F59E0B">
+                      <animateMotion dur="1s" begin="0" repeatCount="indefinite" rotate="auto">
+                        <mpath href="#wavePath"/>
+                        <animateMotion dur="1s" repeatCount="indefinite" rotate="auto">
+                          <mpath href="#wavePath"/>
+                        </animateMotion>
+                      <animate attributeName="opacity" values="1;0.6;1;0.4;1" dur="3s" repeatCount="indefinite"/>
+                    </polygon>
+                    <polygon points="10,0 30,0 20,20 40,20 10,60 20,30 0,30" fill="#F59E0B">
+                      <animateMotion dur="1s" begin="1" repeatCount="indefinite" rotate="auto">
+                        <mpath href="#wavePath"/>
+                        <animateMotion dur="1s" repeatCount="indefinite" rotate="auto">
+                          <mpath href="#wavePath"/>
+                        </animateMotion>
+                      <animate attributeName="opacity" values="1;0.6;1;0.4;1" dur="3s" repeatCount="indefinite"/>
+                    </polygon>
+                  </g>  
+                </svg>
+              </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- SMART TRANSPORT -->
+    <section class="section container" id="transport">
+      <div class="head">
+        <h2>Smart Transport Solutions</h2>
+        <span class="pill">Bike lanes • E‑Jeeps • Walkable streets</span>
+      </div>
+      <div class="grid cols-2">
+        <article class="card reveal">
+          <div class="bike-lane">
+            <div class="road"></div>
+            <svg class="bike" xmlns='http://www.w3.org/2000/svg' width='140' height='70' viewBox='0 0 140 70'>
+              <g fill='none' stroke='%23EAF0FF' stroke-width='2'>
+                <circle cx='35' cy='50' r='18'/>
+                <circle cx='105' cy='50' r='18'/>
+                <path d='M35 50 L60 25 L85 50 L70 20 M60 25 L50 10'/>
+              </g>
+              <circle cx='50' cy='10' r='5' fill='%23EAF0FF'/></svg>
+            <svg class="ejeep" xmlns='http://www.w3.org/2000/svg' width='200' height='80' viewBox='0 0 200 80'>
+            <rect x='10' y='20' width='160' height='40' rx='8' fill='%2360A5FA'/>
+            <rect x='25' y='28' width='90' height='24' rx='4' fill='white' opacity='.9'/>
+            <circle cx='50' cy='66' r='10' fill='%23EAF0FF'/>
+            <circle cx='130' cy='66' r='10' fill='%23EAF0FF'/>
+            <rect x='135' y='32' width='25' height='14' rx='3' fill='%2310B981'/></svg>
+          </div>
+          <div class="body">
+            <h3>Connected corridors</h3>
+            <p class="meta">Protected bike lanes and real‑time e‑jeep arrival boards shorten commutes and cut emissions. Smart crossings calm traffic near schools and markets.</p>
+            <div class="kpi">
+              <span class="tag">CO₂ reduction</span>
+              <div class="bar" data-progress="48"><i></i></div><span>−48%</span>
+            </div>
+          </div>
+        </article>
+        <article class="card reveal">
+          <div class="body">
+            <h3>Walkability first</h3>
+            <p class="meta">Wider sidewalks, curb ramps, and shade canopies prioritize pedestrians and PWD access. Wayfinding to landmarks supports visitors and seniors.</p>
+            <div class="row">
+              <span class="tag">Tactile paving</span>
+              <span class="tag">Curb ramps</span>
+              <span class="tag">Wayfinding</span>
+              <span class="tag">School zones</span>
+            </div>
+            <svg class="walker" alt="jogger" xmlns='http://www.w3.org/2000/svg' viewBox="0 0 100 100" width="60" height="60" style="position: absolute; top:120; left:0;">
+              <circle cx="50" cy="30" r="15" fill="%23EAF0FF"/>
+              <path d="M50 45 L50 75 L40 90 M50 75 L60 90 M35 60 L50 55 L65 60" stroke="%23EAF0FF" stroke-width="5" fill="none"/>
+            </svg>
+
+            <svg viewBox="0 0 600 140" style="margin-top:14px; width:100%" aria-hidden="true">
+              <rect x="0" y="110" width="600" height="8" fill="rgba(255,255,255,.2)" rx="4"/>
+              <rect id="progress" x="0" y="110" width="0" height="8" fill="url(#g2)" rx="4">
+                <animate attributeName="width" from="0" to="600" dur="5.5s" repeatCount="indefinite"/>
+              </rect>
+              <defs>
+                <linearGradient id="g2" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0" stop-color="#6EE7B7"/>
+                  <stop offset="1" stop-color="#60A5FA"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- HERITAGE -->
+    <section class="section container" id="heritage">
+      <div class="head">
+        <h2>Heritage, Revived</h2>
+        <span class="pill">Adaptive reuse • Night markets • Cultural spine</span>
+      </div>
+      <div class="grid cols-3">
+        <article class="card reveal">
+          <div class="body">
+            <h3>Adaptive reuse</h3>
+            <p class="meta">Old public buildings gain new life as libraries, co‑studying lounges, and civic halls with accessible ramps and energy retrofits.</p>
+            <div class="kpi">
+              <span class="tag">Reuse vs. new build</span>
+              <div class="bar" data-progress="72"><i></i></div><span>72%</span>
+            </div>
+          </div>
+        </article>
+        <article class="card reveal">
+          <div class="body">
+            <h3>Night economy</h3>
+            <p class="meta">Pedestrianized streets on weekends host night markets with artisans and food stalls—smart lighting adapts to foot traffic to save energy.</p>
+            <div class="kpi">
+              <span class="tag">Energy savings</span>
+              <div class="bar" data-progress="38"><i></i></div><span>38%</span>
+            </div>
+          </div>
+        </article>
+        <article class="card reveal">
+          <div class="body">
+            <h3>Cultural spine</h3>
+            <p class="meta">A continuous route links plazas, churches, and museums with murals and AR wayfinding for visitors and students.</p>
+            <div class="row">
+              <span class="tag">Murals</span>
+              <span class="tag">Plaza nodes</span>
+              <span class="tag">AR wayfinding</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- RESILIENT HOUSING -->
+    <section class="section container" id="housing">
+      <div class="head">
+        <h2>Disaster‑Resilient, Eco‑Friendly Housing</h2>
+        <span class="pill">Elevated homes • Cross‑ventilation • Solar + rainwater</span>
+      </div>
+      <div class="grid cols-2">
+        <article class="card reveal">
+          <div class="body">
+            <h3>Stilted clusters & pocket courts</h3>
+            <p class="meta">Flood‑aware site planning with elevated walkways and shared courts doubles as evacuation safe zones.</p>
+            <div class="kpi">
+              <span class="tag">Flood risk cut</span>
+              <div class="bar" data-progress="55"><i></i></div><span>−55%</span>
+            </div>
+          </div>
+        </article>
+        <article class="card reveal">
+          <div class="body">
+            <h3>Passive cooling + clean energy</h3>
+            <p class="meta">Operable vents, light‑colored roofs, and rooftop solar keep bills low while maintaining thermal comfort.</p>
+            <div class="kpi">
+              <span class="tag">Cooling load</span>
+              <div class="bar" data-progress="41"><i></i></div><span>−41%</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- CREATIVE DISTRICTS -->
+    <section class="section container" id="creative">
+      <div class="head">
+        <h2>Creative & Innovation Districts</h2>
+        <span class="pill">Art spaces • Startup hubs • Learning labs</span>
+      </div>
+      <div class="grid cols-3">
+        <article class="card reveal">
+          <div class="body">
+            <h3>Riverside art walk</h3>
+            <p class="meta">Pop‑up galleries and buskers energize the waterfront; modular stages host weekend performances.</p>
+          </div>
+        </article>
+        <article class="card reveal">
+          <div class="body">
+            <h3>Startup sheds</h3>
+            <p class="meta">Refitted warehouses with co‑working pods, maker tools, and mentorship zones for students and founders.</p>
+          </div>
+        </article>
+        <article class="card reveal">
+          <div class="body">
+            <h3>Learning labs</h3>
+            <p class="meta">Community labs for robotics, agri‑tech, and design—linked to schools through internship pathways.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ABOUT / TECH NOTES -->
+    <section class="section container" id="about">
+      <div class="head">
+        <h2>API-Enhanced Features</h2>
+        <span class="pill">Real-time data integration</span>
+      </div>
+      <div class="grid cols-3">
+        <article class="card reveal">
+          <div class="body">
+            <h3>Live Traffic Data</h3>
+            <div id="weather-data">
+              <p class="meta">Loading traffic information...</p>
+            </div>
+            <button id="refresh-air-quality" onclick="fetchWeatherData()" 
+                    style="margin-top: 10px; background: #10B981; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 14px;">
+              Refresh Data
+            </button>
+          </div>
+        </article>
+        <article class="card reveal">
+          <div class="body">
+            <h3>Live News Feed</h3>
+            <div id="news-data">
+              <p class="meta">Loading latest news...</p>
+            </div>
+            <button id="refresh-news" onclick="fetchNewsData()" 
+                    style="margin-top: 10px; background: #F59E0B; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 14px;">
+              Refresh News
+            </button>
+          </div>
+        </article>
+        <article class="card reveal">
+          <div class="body">
+            <h3>Currency Exchange Rates</h3>
+            <div id="poi-data">
+              <p class="meta">Loading exchange rates...</p>
+            </div>
+            <button id="refresh-poi" onclick="fetchPointsOfInterest()" 
+                    style="margin-top: 10px; background: #60A5FA; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 14px;">
+              Refresh Rates
+            </button>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div>© 2025 Bacolod Reimagined — Student concept demo.</div>
+        <div class="right">Made with ♥ using open web standards.</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Smooth scroll for internal links
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener('click', e=>{
+        const id = a.getAttribute('href');
+        if(id.length>1){ e.preventDefault(); document.querySelector(id)?.scrollIntoView({behavior:'smooth'}); }
+      })
+    })
+
+    // Reveal on scroll
+    const revealEls=[...document.querySelectorAll('.reveal')]
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in-view'); io.unobserve(en.target); } })
+    },{threshold:.15})
+    revealEls.forEach(el=>io.observe(el))
+
+    // Animate KPI bars when visible
+    const bars=[...document.querySelectorAll('.bar')]
+    const io2 = new IntersectionObserver((entries)=>{
+      entries.forEach(en=>{
+        if(en.isIntersecting){
+          const bar=en.target; const pct=+bar.dataset.progress||0; const fill=bar.querySelector('i');
+          fill.style.transition='width 1.8s cubic-bezier(.22,1,.36,1)';
+          requestAnimationFrame(()=>{ fill.style.width=pct+'%'; })
+          io2.unobserve(bar);
+        }
+      })
+    },{threshold:.6})
+    bars.forEach(b=>io2.observe(b))
+
+    // Lightweight parallax on hero drones
+    const prx = document.querySelector('.parallax');
+    let rafId=null; let tx=0, ty=0;
+    window.addEventListener('mousemove', (e)=>{
+      const {innerWidth:w, innerHeight:h}=window; tx=(e.clientX-w/2)/w; ty=(e.clientY-h/2)/h; if(!rafId){ rafId=requestAnimationFrame(applyParallax) }
+    })
+    function applyParallax(){
+      prx.style.transform=`translate3d(${tx*12}px, ${ty*12}px, 0)`; rafId=null
+    }
+
+    // Rate limiting for API calls - Removed to prevent conflicts with server-side limits
+    const apiCallTimestamps = {
+      airQuality: [],
+      news: [],
+      currency: []
+    };
+
+    // Helper function to check rate limits - Simplified
+    function checkRateLimit(apiName) {
+      // Removed client-side rate limiting to avoid conflicts
+      return true;
+    }
+
+    // Helper function to record API call - Simplified
+    function recordApiCall(apiName) {
+      // No longer tracking calls client-side
+      return;
+    }
+
+    // API Integration
+    // TomTom Traffic API - Live Traffic Data (Free Tier)
+    async function fetchWeatherData() {
+      try {
+        console.log('Fetching traffic data from TomTom...');
+        
+        // Using TomTom Traffic API - free tier (2,500 requests/day)
+        // Note: You'll need to get a free API key from https://developer.tomtom.com/
+        const apiKey = 'f9E2WXopSGtY2IfrkypnL9vZxJpwpIlI'; // Your actual API key
+        
+        // Get traffic flow data for Bacolod City (approximate coordinates)
+        // Bacolod City coordinates: 10.6963, 122.5644
+        const lat = 10.6963;
+        const lon = 122.5644;
+        
+        // Get traffic flow data
+        const response = await fetch(`https://api.tomtom.com/traffic/services/4/flowSegmentData/absolute/10/json?point=${lat}%2C${lon}&key=${apiKey}`);
+        
+        console.log('Traffic API response status:', response.status);
+        
+        if (!response.ok) {
+          const errorData = await response.text();
+          console.log('Error response data:', errorData);
+          throw new Error(`Traffic API request failed with status ${response.status}: ${response.statusText}. Response: ${errorData}`);
+        }
+        
+        const data = await response.json();
+        console.log('Traffic API response data:', data);
+        
+        if (data && data.flowSegmentData) {
+          const trafficData = data.flowSegmentData;
+          const currentSpeed = trafficData.currentSpeed;
+          const freeFlowSpeed = trafficData.freeFlowSpeed;
+          const currentTravelTime = trafficData.currentTravelTime;
+          const freeFlowTravelTime = trafficData.freeFlowTravelTime;
+          
+          // Calculate traffic congestion level
+          const speedRatio = currentSpeed / freeFlowSpeed;
+          let congestionLevel = "Unknown";
+          let congestionColor = "var(--muted)";
+          
+          if (speedRatio >= 0.8) {
+            congestionLevel = "Light";
+            congestionColor = "var(--ok)";
+          } else if (speedRatio >= 0.6) {
+            congestionLevel = "Moderate";
+            congestionColor = "var(--accent-3)";
+          } else if (speedRatio >= 0.4) {
+            congestionLevel = "Heavy";
+            congestionColor = "var(--accent-2)";
+          } else {
+            congestionLevel = "Severe";
+            congestionColor = "var(--danger)";
+          }
+          
+          // Calculate delay
+          const delay = currentTravelTime - freeFlowTravelTime;
+          
+          document.getElementById('weather-data').innerHTML = `
+            <div class="kpi">
+              <span class="tag">Traffic Congestion</span>
+              <span style="color: ${congestionColor}">${congestionLevel}</span>
+            </div>
+            <div class="kpi">
+              <span class="tag">Current Speed</span>
+              <span>${currentSpeed} km/h</span>
+            </div>
+            <div class="kpi">
+              <span class="tag">Free Flow Speed</span>
+              <span>${freeFlowSpeed} km/h</span>
+            </div>
+            <div class="kpi">
+              <span class="tag">Delay</span>
+              <span>${delay > 0 ? delay + ' sec' : 'On time'}</span>
+            </div>
+            <div style="margin-top: 10px; font-size: 12px; color: var(--muted);">
+              Last updated: ${new Date().toLocaleTimeString()}
+            </div>
+            <p class="meta" style="margin-top: 10px; font-size: 12px;">
+              <a href="https://www.tomtom.com/" target="_blank" style="color: #60A5FA;">TomTom Website</a> | 
+              <a href="https://developer.tomtom.com/traffic-api/documentation/traffic-flow-traffic-incidents/flow-segment-data" target="_blank" style="color: #60A5FA;">API Documentation</a>
+            </p>
+          `;
+        } else {
+          throw new Error('Traffic data unavailable');
+        }
+      } catch (error) {
+        console.error('Error fetching traffic data:', error);
+        // Fallback data for demonstration
+        document.getElementById('weather-data').innerHTML = `
+          <div class="kpi">
+            <span class="tag">Traffic Congestion</span>
+            <span style="color: var(--ok)">Light</span>
+          </div>
+          <div class="kpi">
+            <span class="tag">Current Speed</span>
+            <span>45 km/h</span>
+          </div>
+          <div class="kpi">
+            <span class="tag">Free Flow Speed</span>
+            <span>50 km/h</span>
+          </div>
+          <div class="kpi">
+            <span class="tag">Delay</span>
+            <span>On time</span>
+          </div>
+          <div style="margin-top: 10px; font-size: 12px; color: var(--muted);">
+            Last updated: ${new Date().toLocaleTimeString()} (Demo Data)
+          </div>
+          <p class="meta" style="margin-top: 10px; font-size: 12px;">
+            <a href="https://www.tomtom.com/" target="_blank" style="color: #60A5FA;">TomTom Website</a> | 
+            <a href="https://developer.tomtom.com/" target="_blank" style="color: #60A5FA;">Get API Key</a>
+          </p>
+        `;
+      }
+    }
+
+    // NewsData.io API - Live News Feed
+    async function fetchNewsData() {
+      try {
+        console.log('Fetching news data from NewsData.io...');
+        
+        // Check rate limit
+        if (!checkRateLimit('news')) {
+          throw new Error('Rate limit exceeded. Please wait before making another request (max 5 calls per minute).');
+        }
+        
+        // Record this API call
+        recordApiCall('news');
+        
+        // Using NewsData.io API - 1000 requests/month free
+        // Note: You'll need to get a free API key from https://newsdata.io/
+        const apiKey = 'pub_e991e52034d24d949073073ce1346b04'; // Your actual API key
+        
+        // Validate API key first
+        const response = await fetch(`https://newsdata.io/api/1/news?apikey=${apiKey}&q=Bacolod&language=en&size=3`);
+        
+        console.log('News API response status:', response.status);
+        
+        // Handle rate limiting (429)
+        if (response.status === 429) {
+          throw new Error('Rate limit exceeded. Please wait before making another request. Free tier limit: 1,000 calls/month');
+        }
+        
+        // Check if response is OK
+        if (!response.ok) {
+          const errorData = await response.text();
+          console.log('News API error response:', errorData);
+          throw new Error(`News API request failed with status ${response.status}: ${response.statusText}. Response: ${errorData}`);
+        }
+        
+        const data = await response.json();
+        console.log('News API response data:', data);
+        
+        if (data.status === "success" && data.results) {
+          // Display latest 3 news items
+          let newsHTML = '<div class="row" style="flex-direction: column; gap: 15px;">';
+          
+          data.results.slice(0, 3).forEach(article => {
+            const title = article.title || 'Untitled';
+            const description = article.description || 'No description available';
+            const source = article.source_id || 'Unknown source';
+            const date = article.pubDate ? new Date(article.pubDate).toLocaleDateString() : 'Unknown date';
+            
+            newsHTML += `
+              <div style="border-bottom: 1px solid rgba(255,255,255,.1); padding-bottom: 10px;">
+                <h4 style="margin: 0 0 5px; font-size: 16px;">${title.substring(0, 60)}${title.length > 60 ? '...' : ''}</h4>
+                <p class="meta" style="margin: 5px 0; font-size: 13px;">${description.substring(0, 80)}${description.length > 80 ? '...' : ''}</p>
+                <div class="tag" style="font-size: 11px; justify-content: space-between;">
+                  <span>${source}</span>
+                  <span>${date}</span>
+                </div>
+              </div>
+            `;
+          });
+          
+          newsHTML += `
+            <div style="margin-top: 10px; font-size: 12px; color: var(--muted);">
+              Last updated: ${new Date().toLocaleTimeString()}
+            </div>
+            <p class="meta" style="margin-top: 10px; font-size: 12px;">
+              <a href="https://newsdata.io/" target="_blank" style="color: #60A5FA;">NewsData.io Website</a> | 
+              <a href="https://newsdata.io/documentation" target="_blank" style="color: #60A5FA;">API Documentation</a>
+            </p>
+          `;
+          
+          newsHTML += '</div>';
+          document.getElementById('news-data').innerHTML = newsHTML;
+        } else {
+          throw new Error('News data unavailable - ' + (data.message || 'no data returned'));
+        }
+      } catch (error) {
+        console.error('Error fetching news data:', error);
+        // Fallback data for demonstration
+        const sampleNews = [
+          { title: "Bacolod City Launches New Smart Traffic System", source: "SunStar", date: "2025-10-20" },
+          { title: "Local Startup Wins National Innovation Award", source: "Philippine Daily Inquirer", date: "2025-10-18" },
+          { title: "City Hall Announces Green Building Initiative", source: "Bacolod Times", date: "2025-10-15" }
+        ];
+        
+        let newsHTML = '<div class="row" style="flex-direction: column; gap: 15px;">';
+        sampleNews.forEach(news => {
+          newsHTML += `
+            <div style="border-bottom: 1px solid rgba(255,255,255,.1); padding-bottom: 10px;">
+              <h4 style="margin: 0 0 5px; font-size: 16px;">${news.title}</h4>
+              <div class="tag" style="font-size: 11px; justify-content: space-between;">
+                <span>${news.source}</span>
+                <span>${news.date}</span>
+              </div>
+            </div>
+          `;
+        });
+        newsHTML += `
+          <div style="margin-top: 10px; font-size: 12px; color: var(--muted);">
+            Last updated: ${new Date().toLocaleTimeString()} (Demo Data)
+          </div>
+          <p class="meta" style="margin-top: 10px; font-size: 12px;">
+            <a href="https://newsdata.io/" target="_blank" style="color: #60A5FA;">NewsData.io Website</a>
+          </p>
+        `;
+        newsHTML += '</div>';
+        document.getElementById('news-data').innerHTML = newsHTML;
+      }
+    }
+
+    // ExchangeRate-API - Currency Exchange Rates
+    async function fetchPointsOfInterest() {
+      try {
+        console.log('Fetching currency data from ExchangeRate-API...');
+        
+        // Check rate limit
+        if (!checkRateLimit('currency')) {
+          throw new Error('Rate limit exceeded. Please wait before making another request (max 5 calls per minute).');
+        }
+        
+        // Record this API call
+        recordApiCall('currency');
+        
+        // Using ExchangeRate-API - free tier available
+        // Note: You'll need to get a free API key from https://www.exchangerate-api.com/
+        const apiKey = '2eb255f52f602947c2f1b0ab'; // Your actual API key
+        
+        // Validate API key first
+        const response = await fetch(`https://v6.exchangerate-api.com/v6/${apiKey}/latest/PHP`);
+        
+        console.log('Currency API response status:', response.status);
+        
+        // Handle rate limiting (429)
+        if (response.status === 429) {
+          throw new Error('Rate limit exceeded. Please wait before making another request. Free tier limit: 1,500 calls/month');
+        }
+        
+        if (!response.ok) {
+          const errorData = await response.text();
+          console.log('Currency API error response:', errorData);
+          throw new Error(`Currency API request failed with status ${response.status}: ${response.statusText}. Response: ${errorData}`);
+        }
+        
+        const data = await response.json();
+        console.log('Currency API response data:', data);
+        
+        if (data.result === "success") {
+          // Show exchange rates for common currencies
+          const rates = data.conversion_rates;
+          let currencyHTML = '<div class="row" style="flex-direction: column; gap: 10px;">';
+          
+          // Show USD, EUR, JPY, and SGD rates
+          const currencies = [
+            { code: 'USD', name: 'US Dollar' },
+            { code: 'EUR', name: 'Euro' },
+            { code: 'JPY', name: 'Japanese Yen' },
+            { code: 'SGD', name: 'Singapore Dollar' }
+          ];
+          
+          currencies.forEach(currency => {
+            if (rates[currency.code]) {
+              currencyHTML += `
+                <div class="kpi">
+                  <span class="tag">${currency.code} (${currency.name})</span>
+                  <span>1 PHP = ${rates[currency.code].toFixed(4)} ${currency.code}</span>
+                </div>
+              `;
+            }
+          });
+          
+          currencyHTML += `
+            <div style="margin-top: 10px; font-size: 12px; color: var(--muted);">
+              Last updated: ${new Date().toLocaleTimeString()}
+            </div>
+            <p class="meta" style="margin-top: 10px; font-size: 12px;">
+              <a href="https://www.exchangerate-api.com/" target="_blank" style="color: #60A5FA;">ExchangeRate-API Website</a> | 
+              <a href="https://www.exchangerate-api.com/docs" target="_blank" style="color: #60A5FA;">API Documentation</a>
+            </p>
+          `;
+          
+          currencyHTML += '</div>';
+          document.getElementById('poi-data').innerHTML = currencyHTML;
+        } else {
+          throw new Error('Currency data unavailable - ' + (data.message || 'no data returned'));
+        }
+      } catch (error) {
+        console.error('Error fetching currency data:', error);
+        // Fallback: show some sample currency data
+        document.getElementById('poi-data').innerHTML = `
+          <div class="row" style="flex-direction: column; gap: 10px;">
+            <div class="kpi">
+              <span class="tag">USD (US Dollar)</span>
+              <span>1 PHP = 0.0175 USD</span>
+            </div>
+            <div class="kpi">
+              <span class="tag">EUR (Euro)</span>
+              <span>1 PHP = 0.0162 EUR</span>
+            </div>
+            <div class="kpi">
+              <span class="tag">JPY (Japanese Yen)</span>
+              <span>1 PHP = 2.5400 JPY</span>
+            </div>
+            <div class="kpi">
+              <span class="tag">SGD (Singapore Dollar)</span>
+              <span>1 PHP = 0.0240 SGD</span>
+            </div>
+            <div style="margin-top: 10px; font-size: 12px; color: var(--muted);">
+              Last updated: ${new Date().toLocaleTimeString()} (Demo Data)
+            </div>
+            <p class="meta" style="margin-top: 10px; font-size: 12px;">
+              <a href="https://www.exchangerate-api.com/" target="_blank" style="color: #60A5FA;">ExchangeRate-API Website</a>
+            </p>
+          </div>
+        `;
+      }
+    }
+
+    // Initialize APIs when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      // Fetch air quality data
+      fetchWeatherData();
+      
+      // Fetch points of interest
+      fetchPointsOfInterest();
+      
+      // Fetch news data
+      fetchNewsData();
+      
+      // Map initialization removed as per requirements
+    });
+  </script>
+  <!-- Leaflet CSS for OpenStreetMap - Removed as map section is removed -->
+  <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/> -->
+
+  <script>
+    // Initialize APIs when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      // Fetch air quality data
+      fetchWeatherData();
+      
+      // Fetch points of interest
+      fetchPointsOfInterest();
+      
+      // Fetch news data
+      fetchNewsData();
+      
+      // Map initialization removed as per requirements
+    });
+  </script>
+  <!-- Leaflet JS for OpenStreetMap - Removed as map section is removed -->
+  <!-- <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script> -->
+  <!-- Google Maps API - Removed as we're using OpenStreetMap now -->
+  <!-- <script async defer 
+    src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap">
+  </script> -->
+</body>
+</html>
